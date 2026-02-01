@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>旻進黨公文 - Canvas 版</title>
+    <style>
+        body { display: flex; flex-direction: column; align-items: center; background: #f0f0f0; padding: 20px; font-family: sans-serif; }
+        canvas { background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: crosshair; }
+        .controls { margin-bottom: 10px; }
+        p { color: #666; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <button onclick="downloadCanvas()">下載公文圖片</button>
+    </div>
+
+    <canvas id="docCanvas" width="700" height="900"></canvas>
+    <p>提示：此為 Canvas 渲染，可按右鍵另存為圖片</p>
+
+    <script>
+        const canvas = document.getElementById('docCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // 繪製背景
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // 設定字體與顏色
+        const titleFont = 'bold 32px "Microsoft JhengHei"';
+        const headerFont = '18px "Microsoft JhengHei"';
+        const bodyFont = '16px "Microsoft JhengHei"';
+        const boldFont = 'bold 16px "Microsoft JhengHei"';
+
+        // 1. 標題 
+        ctx.font = titleFont;
+        ctx.fillStyle = '#d63031'; // 加上一點紅色的公文感
+        ctx.textAlign = 'center';
+        ctx.fillText('旻進黨公文', canvas.width / 2, 70);
+
+        // 繪製分隔線
+        ctx.strokeStyle = '#d63031';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(50, 90);
+        ctx.lineTo(650, 90);
+        ctx.stroke();
+
+        // 2. 提案人資訊 
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#000';
+        ctx.font = headerFont;
+        ctx.fillText('提案人：陳愷佑 (發言人)', 60, 130);
+        ctx.textAlign = 'right';
+        ctx.fillText('事務處理：林品樂 (總幹事)', 640, 130);
+
+        // 3. 主題與目的 
+        ctx.textAlign = 'left';
+        ctx.font = boldFont;
+        ctx.fillText('主題：募款贊助弱勢者洗頭活動', 60, 170);
+        ctx.fillText('目的：宣傳正面形象，幫助全黨進步', 60, 200);
+
+        // 繪製內容框
+        ctx.strokeStyle = '#ccc';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(50, 230, 600, 550);
+
+        // 4. 內容詳情繪製函數 
+        function drawSection(title, lines, y) {
+            ctx.font = boldFont;
+            ctx.fillStyle = '#2d3436';
+            ctx.fillText(title, 70, y);
+            
+            ctx.font = bodyFont;
+            ctx.fillStyle = '#636e72';
+            lines.forEach((line, index) => {
+                ctx.fillText('• ' + line, 90, y + 30 + (index * 25));
+            });
+            return y + 40 + (lines.length * 25);
+        }
+
+        let currentY = 260;
+        currentY = drawSection('【大致規劃】', ['由總幹事 (林品樂) 處理各項事務', '經費由黨員募款而來', '由總監 (莊博勝) 負責清點及整理錢'], currentY);
+        currentY = drawSection('【人員職位】', ['缺一位購買洗髮精者', '缺一位贈送禮物者'], currentY + 10);
+        currentY = drawSection('【經費細項】', ['每人最多捐贈 30 元', '募款至足夠之金額則截止', '將款項交於總幹事 (林品樂) 或總監 (莊博勝)'], currentY + 10);
+        currentY = drawSection('【實行細項】', ['受贊助者：方彥翔同學', '實施日期：2026/3/13 (生日)'], currentY + 10);
+        currentY = drawSection('【更改或廢止】', ['廢止：由總監、總召、總幹事三人同意', '修改：由總監、總召、總幹事任一人同意'], currentY + 10);
+
+        // 5. 日期 
+        ctx.textAlign = 'right';
+        ctx.font = headerFont;
+        ctx.fillStyle = '#000';
+        ctx.fillText('日期：2026/2/1', 640, 850);
+
+        // 下載圖片功能
+        function downloadCanvas() {
+            const link = document.createElement('a');
+            link.download = '旻進黨公文.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+    </script>
+</body>
+</html>
